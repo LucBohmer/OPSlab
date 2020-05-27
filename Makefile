@@ -10,8 +10,8 @@
 CXX = gcc
 CXXFLAGS=-g -O0 -Wall -Wextra
 
-EXECUTABLE = queue
-SOURCES = ${wildcard *.c}
+EXECUTABLE = sharedQueue
+SOURCES = ${filter-out main.c, $(wildcard *.c)}
 HEADERS = ${wildcard *.h}
 OBJECTS = ${SOURCES:.c=.o}
 
