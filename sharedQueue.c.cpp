@@ -20,6 +20,7 @@ data_t thread3 = {4, "Thread 3"};
 queue_t queue = {NULL};
 
 void *producer(void *input);
+void *consumer(void *input);
 
 int main()
 {
@@ -27,6 +28,8 @@ int main()
   pthread_create(&tid, NULL, &producer, (void *)&thread1);
   pthread_create(&tid, NULL, &producer, (void *)&thread2);
   pthread_create(&tid, NULL, &producer, (void *)&thread3);
+  pthread_create(&tid, NULL, &consumer, NULL);
+  pthread_join(tid, NULL);
   return 0;
 }
 
@@ -34,5 +37,20 @@ void *producer(void *input)
 {
   data_t *arguments = input;
   sleep(arguments->intVal);
-  pushQueue(&queue, *arguments);
+  if(backQueue(&queue) == NULL)
+  {
+    createQueue(&queue, *arguments);
+  }
+  else
+  {
+    pushQueue(&queue, *arguments);
+  }
+  pthread_exit(NULL);
+}
+
+void *consumer(void *input)
+{
+  sleep(15);
+  showQueue(&queue);
+  pthread_exit(NULL);
 }
