@@ -24,6 +24,8 @@ int CTRLCPressed = 0;
 
 int runningProducers = 0;
 
+pthread_mutex_t lock;
+
 
 void *producer(void *input);
 void *consumer(void *input);
@@ -31,6 +33,7 @@ void sighandler(int sig_num);
 
 int main()
 {
+  pthread_mutex_init(&lock, NULL);
   signal(SIGINT, sighandler);
 	 
   pthread_t tid;
@@ -39,6 +42,7 @@ int main()
   pthread_create(&tid, NULL, &producer, (void *)&thread3);
   pthread_create(&tid, NULL, &consumer, NULL);
   pthread_join(tid, NULL);
+  pthread_mutex_destroy(&lock);
   return 0;
 }
 
@@ -49,6 +53,8 @@ void *producer(void *input)
   while(1)
     {
       sleep(arguments->intVal);
+	  pthread_mutex_lock(&lock);
+	  
       if(backQueue(&queue) == NULL)
 	{
 	  createQueue(&queue, *arguments);
@@ -57,7 +63,8 @@ void *producer(void *input)
 	{
 	  pushQueue(&queue, *arguments);
 	}
-      if(CTRLCPressed == 1)
+	pthread_mutex_unlock(&lock);
+    if(CTRLCPressed == 1)
 	{
 	  runningProducers--;
 	  pthread_exit(NULL);
@@ -70,8 +77,10 @@ void *consumer(void *input)
    while(1)
     {
       sleep(15);
+	  pthread_mutex_lock(&lock);
       showQueue(&queue);
-      emptyQueue(&queue);
+      deleteQueue(&queue);
+      pthread_mutex_unlock(&lock);
       if(runningProducers<=0)
 	{
 	  pthread_exit(NULL);
