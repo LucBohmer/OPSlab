@@ -1,12 +1,3 @@
-/******************************************************************************
- * File:         main.c
- * Version:      1.2
- * Date:         2017-10-18
- * Author:       J. Onokiewicz, M. van der Sluys
- * Description:  OPS exercise 5: Queues
- ******************************************************************************/
-
-
 #include "Queue.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,7 +16,7 @@ int CTRLCPressed = 0;
 int runningProducers = 0;
 
 pthread_mutex_t lock;
-
+FILE * fp;
 
 void *producer(void *input);
 void *consumer(void *input);
@@ -79,6 +70,7 @@ void *consumer(void *input)
       sleep(15);
 	  pthread_mutex_lock(&lock);
       showQueue(&queue);
+	  showQueueToFile(&queue, "log.txt");
       deleteQueue(&queue);
       pthread_mutex_unlock(&lock);
       if(runningProducers<=0)
