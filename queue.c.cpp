@@ -108,7 +108,7 @@ void showQueue(const queue_t* queue) {
   if(nextN == NULL) {
     printf("Queue is empty, last node is %p\n", (void*) queue->lastNode);
   } else {
-    printf("Queue contains %ld nodes:\n", sizeQueue(queue));
+    printf("Queue contains %d nodes:\n", sizeQueue(queue));
     printf("Last node: %p\n", (void*) queue->lastNode);
     do {
       nextN = nextN->nextNode;
@@ -123,11 +123,12 @@ void showQueueToFile(const queue_t* queue, const char *filename) {
   const node_t* nextN = queue->lastNode;
   if(nextN != NULL) {
     FILE *out = fopen(filename, "a");
-    fprintf(out, "Queue contains %ld nodes:\n", sizeQueue(queue));
+    fprintf(out, "Queue contains %d nodes:\n", sizeQueue(queue));
     do {
       nextN = nextN->nextNode;
       fprintf(out, "pNode = %p  Data = '%d' '%s'  nextN = %p\n",
              (void*)nextN, nextN->data.intVal, nextN->data.text, (void*)nextN->nextNode);
     } while(nextN != queue->lastNode);
+	fclose(out);
   }
 }

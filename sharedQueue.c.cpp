@@ -75,6 +75,7 @@ void *consumer(void *input)
       pthread_mutex_unlock(&lock);
       if(runningProducers<=0)
 	{
+	  deleteQueue(&queue);
 	  pthread_exit(NULL);
 	}
    }
